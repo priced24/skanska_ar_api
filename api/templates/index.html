@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+            integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+            crossorigin=""
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../static/stylesheets/index.css"
+        />
+        <title>AR Innovation Webapp</title>
+    </head>
+
+    <body>
+        <div class="header">
+            <div class="row">
+                <div class="column left">
+                    <h1>Shiley-Marcos Center for Design & Innovation</h1>
+                </div>
+                <div class="column middle">
+                    <img src=
+                    https://www.pcc.edu/wp-content/uploads/sites/126/images/u-of-portland.png
+                    height= 75 width= 150>
+                </div>
+
+                <div class="column right">
+                    <button
+                        class="button"
+                        onclick="window.location.href='configure';"
+                    >
+                        Configure
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <!-- Create search bar -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <form
+            class="example"
+            action="action_page.php"
+            style="margin: auto; max-width: 700px"
+        >
+            <input type="text" placeholder="Search.." name="search" />
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+
+        <!-- Create sidebar 
+    <div id="leaflet-sidebar">
+        <h1>leaflet-sidebar</h1>
+    </div>
+    -->
+
+        <div id="map"></div>
+
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script
+            src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+            crossorigin=""
+        ></script>
+        <script src="\static\scripts\index.js"></script>
+    </body>
+</html>

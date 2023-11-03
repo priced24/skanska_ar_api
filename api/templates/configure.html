@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Innovation AR Configuration</title>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../static/stylesheets/configure.css"
+        />
+        <script src="\static\scripts\configure.js"></script>
+    </head>
+
+    <body>
+        <!-- Header -->
+        <div class="header">
+            <div class="row">
+                <div class="column left">
+                    <h1>Shiley-Marcos Center for Desgin & Innovation</h1>
+                </div>
+                <div class="column middle">
+                    <img src=
+                    https://www.pcc.edu/wp-content/uploads/sites/126/images/u-of-portland.png
+                    height= 75 width= 150>
+                </div>
+                <div class="column right">
+                    <button class="button" onclick="window.location.href='/';">
+                        Home
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forms -->
+        <div class="formrow">
+            <div class="formcolumn">
+                <!-- Configure a Sensor -->
+                <form id="sensorForm" method="GET" action="/rooms/">
+                    <h3>Configure A Sensor</h3>
+                    <div id="buildingconfig">
+                        <h4>Select the building.</h4>
+                        <label for="buildings">Available buildings:</label>
+                        <select name="buildings" id="bsDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                        <br />
+
+                        <h4>Select the room.</h4>
+                        <label for="rooms">Available rooms:</label>
+                        <select name="rDropdown" id="rDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                        <br />
+                        <h4>Enter the sensor name you want to add.</h4>
+                        <label for="sensors">Sensor:</label>
+                        <input type="text" id="sName" name="sensor" />
+                        <br />
+                        <h4>Enter a description of the sensor.</h4>
+                        <label for="sensors">Description:</label>
+                        <input type="text" id="sDescription" name="sensor" />
+                        <br />
+                        <input type="submit" id="sSubmit" value="Submit" />
+                    </div>
+                </form>
+            </div>
+
+            <div class="formcolumn">
+                <!-- Configure a room -->
+                <form>
+                    <h3>Configure A Room</h3>
+
+                    <div id="roomconfig">
+                        <h4>Select the building.</h4>
+                        <label for="buildings">Available buildings:</label>
+                        <select name="buildings" id="brDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                        <br />
+                    </div>
+
+                    <h4>Enter the room number (and name) you want to add.</h4>
+                    <label for="rooms">Room Number:</label>
+                    <input type="text" id="rNumber" name="rooms" />
+                    <br />
+
+                    <h4>Enter a description of room.</h4>
+                    <label for="rooms">Description:</label>
+                    <input type="text" id="rDescription" name="room" />
+                    <br />
+                    <input type="submit" value="Submit" id="rSubmit" />
+                </form>
+            </div>
+
+            <div class="formcolumn">
+                <!-- Configure a building -->
+                <form>
+                    <h3>Configure A Building</h3>
+                    <div id="buildingconfig">
+                        <h4>Enter the building name you want to add.</h4>
+                        <label for="buildings">Name:</label>
+                        <input type="text" id="bName" name="building" />
+
+                        <h4>Enter a description of the building.</h4>
+                        <label for="buildings">Description:</label>
+                        <input type="text" id="bDescription" name="building" />
+                        <br />
+                    </div>
+                    <input type="submit" value="Submit" id="bSubmit" />
+                </form>
+            </div>
+        </div>
+
+        <div class="formrow">
+            <div class="formcolumn">
+                <!-- Delete a Sensor -->
+                <form>
+                    <h3>Delete A Sensor</h3>
+                    <div id="sensordelete">
+                        <h4>Select the room the sensor is in.</h4>
+                        <label for="Rooms">Available Rooms:</label>
+                        <select name="rooms" id="sdrDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                        <h4>Select the sensor.</h4>
+                        <label for="sensors">Available Sensors:</label>
+                        <select name="sensors" id="sdsDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <input type="submit" value="Delete" id="sDelete" />
+                </form>
+            </div>
+            <div class="formcolumn">
+                <!-- Delete a room -->
+                <form>
+                    <h3>Delete A Room</h3>
+                    <div id="roomdelete">
+                        <h4>Select the building the room is in.</h4>
+                        <label for="buildings">Available Buildings:</label>
+                        <select name="buildings" id="rdbDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                        <h4>Select the room.</h4>
+                        <label for="rooms">Available Rooms:</label>
+                        <select name="rooms" id="rdrDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <input type="submit" value="Delete" id="rDelete" />
+                </form>
+            </div>
+            <div class="formcolumn">
+                <!-- Delete a building -->
+                <form>
+                    <h3>Delete A Building</h3>
+                    <div id="buildingdelete">
+                        <h4>Select the building.</h4>
+                        <label for="buildings">Available Buildings:</label>
+                        <select name="buildings" id="bdDropdown">
+                            {% for b in bs%}
+                            <option value="{{b.name}}">{{b.name}}</option>
+                            {%endfor%}
+                        </select>
+
+                        <br /><br />
+                    </div>
+                    <input type="submit" value="Delete" id="bDelete" />
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+<html></html>

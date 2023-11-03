@@ -1,0 +1,83 @@
+h1, h2, h3{
+    color: #825091;
+  }
+  
+  center {
+    background-color: rgb(255, 255, 255);
+  }
+  
+  body
+   {
+     margin: 0;
+     padding: 0;
+     
+     /* make it look decent enough */
+     background: #232323;
+     font-family: "Avenir Next", "Avenir", sans-serif;
+   }
+
+  * {
+    box-sizing: border-box;
+  }
+  
+  .button {
+    background-color: #825091;;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    margin: 25px;
+    width: 60%;
+    cursor: pointer;
+  
+  }
+  
+  .center{
+    margin: 3rem auto;
+    width: 100%;
+  }
+  
+  
+  /* Messing with the header */
+  .header {
+    padding: 10px;
+    height: 100px;
+    text-align: center;
+    background: white;
+    color: white;
+    font-size: 20px;
+  }
+  .column {
+    float: left;
+  }
+  
+  .left{
+    width: 65%;
+    text-align: right;
+  }
+  .middle {
+    width: 15%;
+    text-align: left;
+  }
+  .right {
+    width: 20%;
+    text-align: center;
+  }
+
+  .formrow{
+    width:95%;
+    height: 520px;
+    padding: 10px 30px;
+  }
+  .formcolumn {
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    border: 15px solid #232323;
+    float: right;
+    width: 33.33%;
+  }
+
+ 

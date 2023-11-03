@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Libraries we need to use -->
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+        <script src="https://supereggbert.github.io/aframe-htmlembed-component/dist/build.js"></script>
+
+        <!-- this is the listeners for input from user -->
+        <script>
+            window.onload = function () {
+                // listener for toggling the graphs
+                document
+                    .querySelector(".toggle")
+                    .addEventListener("click", function () {
+                        // basically hide and show figures depending on which one
+                        // is being shown now
+                        const chart =
+                            document.querySelector("#chart-container");
+                        const pieChart = document.querySelector(
+                            "#pie-chart-container"
+                        );
+                        if (chart.style.display == "none") {
+                            chart.style.display = "block";
+                            pieChart.style.display = "none";
+                        } else {
+                            chart.style.display = "none";
+                            pieChart.style.display = "block";
+                        }
+                    });
+                // listener for updating the data in the future
+                // maybe add a visual thing that its working (ex. a loading circle)
+                document
+                    .querySelector(".button")
+                    .addEventListener("click", function () {
+                        alert("This Will Change the scene and or update data");
+                    });
+                document
+                    .querySelector(".help")
+                    .addEventListener("click", function () {
+                        const mess = document.querySelector("#modal");
+                        const mess2 = document.querySelector(".legend-cont");
+
+                        if (mess.style.display == "none") {
+                            mess.style.display = "block";
+                            mess2.style.display = "none";
+                        } else {
+                            mess.style.display = "none";
+                        }
+                    });
+
+                document
+                    .querySelector("#closeModal")
+                    .addEventListener("click", function () {
+                        const mess = document.querySelector("#modal");
+                        mess.style.display = "none";
+                    });
+
+                document
+                    .querySelector(".legend")
+                    .addEventListener("click", function () {
+                        const mess = document.querySelector(".legend-cont");
+                        mess.style.display = "block";
+                    });
+
+                document
+                    .querySelector("#legendClose")
+                    .addEventListener("click", function () {
+                        const mess = document.querySelector(".legend-cont");
+                        mess.style.display = "none";
+                    });
+            };
+        </script>
+
+        <script>
+
+            /*
+            Gets/Updates the data for the given sensor
+            @params - NONE
+            @returns - [ [value1, value2...valuen], "name_of_sensor", "sensor_type"]
+            */
+
+            function updateData() {
+              return new Promise((resolve, reject) => {
+                //Initialize xhr
+                const xhr = new XMLHttpRequest();
+                //Establish URL for local host this will have to be changed later
+                const url = "http://127.0.0.1:5000/sensors/" + {{ sid }}
+
+              //Esablish as a get request
+              xhr.open("GET", url, true);
+
+
+              //Check if there ahs been a response yet
+              xhr.onreadystatechange = function () {
+
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+
+                 let responseJSON = JSON.parse(xhr.responseText);
+                  //Esablish Array to return
+                  let valArray = [[], responseJSON.name];
+                  responseJSON.data.forEach(function (item) {
+
+                    //Add the units to the array
+                    if (valArray.length < 3) {
+                      valArray.push(item.units);
+                    }
+                    //Push the values
+                    valArray[0].push(item.value);
+
+                  });
+                  // { value: 30, name: "January", units: "g/day" }
+                  let forGraph = [];
+                  for (var i = 0; i < valArray[0].length; i++) {
+                    var vals = {
+                      value: parseInt(valArray[0][i]),
+                      sensID: i.toString(),
+                      datetime: responseJSON.data[i].datetime,
+                      units: valArray[2] };
+
+                    forGraph.push(vals);
+                  }
+                  resolve(forGraph);
+                }
+              }
+              //Send the Get request
+              xhr.send();
+            });
+            }
+        </script>
+    </head>
+
+    <body>
+        <!-- this is the stuff on the actual webpage -->
+        <div class="buttons">
+            <button class="toggle">Toggle Chart</button>
+            <button class="button">Refresh</button>
+            <button class="legend">Legend</button>
+        </div>
+        <button class="help">?</button>
+        <div id="modal">
+            <div id="modalContent">
+                <h1 id="TITLE">Welcome to the AR Aspect of our Project!</h1>
+                <p id="Tdesc">
+                    This program runs in HTML and JavaScript bringing our data
+                    into the Virtual reality realm!
+                </p>
+                <h3 class="subtitle">How It Works</h3>
+                <p class="desc">
+                    Point the mobile camera at one of our Markers, and when the
+                    marker is seen by the camera it will show the graphs created
+                    from the data in our database.
+                </p>
+                <h3 class="subtitle">Help</h3>
+                <p class="desc">
+                    Once the marker is found by the camera, there are two
+                    buttons you can interact with, a Toggle Chart and a Refresh
+                    button.
+                </p>
+                <h4 class="subtitle">Toggle</h4>
+                <p class="desc">
+                    This button is what changes the graph type, currently we
+                    have a Bar Graph and a Pie chart
+                </p>
+                <h4 class="subtitle">Refresh</h4>
+                <p class="desc">
+                    This button is what Updates the data to the most recent
+                    values collected
+                </p>
+
+                <button id="closeModal">Close</button>
+            </div>
+        </div>
+
+        <div class="legend-cont">
+            <div class="legend-content">
+                <h1 id="Ltitle">LEGEND</h1>
+                <ul id="Llegend"></ul>
+                <button id="legendClose">Close</button>
+            </div>
+        </div>
+
+        <!-- this is the stuff in AR -->
+        <a-scene embedded arjs>
+            <a-marker preset="hiro">
+                <a-entity htmlembed position="0 0 0" rotation="-90 0 0">
+                    <div id="chart-title">Water Usage</div>
+                    <div id="chart-container"></div>
+                    <div id="pie-chart-container"></div>
+                </a-entity>
+            </a-marker>
+            <a-entity camera></a-entity>
+        </a-scene>
+
+        <!-- this is the bar graph creation -->
+        <script>
+            // Define data
+            // hard coded for now but should be pulled from db in future
+            async function addData() {
+                let data = await updateData();
+                /*
+                Hardcoded data should we need it
+                const data = [
+                  { value: 30, name: "January", units: "g/day" },
+                  { value: 86, name: "February", units: "g/day" },
+                  { value: 181, name: "March", units: "g/day" },
+                  { value: 220, name: "April", units: "g/day" },
+                  { value: 303, name: "May", units: "g/day" },
+                  { value: 350, name: "June", units: "g/day" }];
+                */
+
+                // Variables we need to use later on
+                const margin = { top: 30, right: 20, bottom: 30, left: 40 };
+                const width = 400 - margin.left - margin.right;
+                const height = 300 - margin.top - margin.bottom;
+
+                // Create an SVG element and set its dimensions
+                const svg = d3
+                    .select("#chart-container")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr(
+                        "transform",
+                        `translate(${margin.left}, ${margin.top})`
+                    );
+
+                // Define the scales for the x and y
+                const x = d3
+                    .scaleBand()
+                    .domain(data.map((d) => d.sensID))
+                    .range([0, width]);
+
+                const y = d3
+                    .scaleLinear()
+                    .domain([0, d3.max(data, (d) => d.value) + 100])
+                    .range([height, 0]);
+
+                // this is what determins the colors of the bars
+                const colorScale = d3
+                    .scaleOrdinal()
+                    .domain(data.map((d) => d.sensID))
+                    .range(d3.schemeSet2);
+
+                //Create the bars of the chart
+                svg.selectAll("rect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("x", (d, i) => x(d.sensID)) // x cord for bar positioning
+                    .attr("y", (d) => y(d.value)) // y cord for bar positioning
+                    .attr("width", width / data.length) // how wide you want the bar
+                    .attr("height", (d) => height - y(d.value)) // how tall you want the bar
+                    .attr("fill", (d) => colorScale(d.sensID)) // setting the actual color
+                    .attr("stroke", "white")
+                    .attr("stroke-width", 1)
+                    .append("title")
+                    .text((d) => `${d.sensID}`);
+
+                // add value labels for easier readings
+                svg.selectAll(".bar-label")
+                    .data(data)
+                    .enter()
+                    .append("text")
+                    .attr("class", "bar-label")
+                    .attr("x", (d, i) => x(d.sensID) + width / data.length / 2)
+                    .attr("y", (d) => y(d.value) - 5)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "white")
+                    .text((d) => d.value + " " + d.units);
+
+                // Create the x-axis
+                const xAxis = d3.axisBottom(x);
+
+                // Attach x-axis
+                svg.append("g")
+                    .attr("transform", `translate(0, ${height})`)
+                    .attr("color", "white")
+                    .call(xAxis);
+
+                // Add label to x-axis
+                svg.append("text")
+                    .attr("x", (width - margin.left - margin.right) / 2)
+                    .attr("y", height + margin.bottom)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "white")
+                    .text("SensorID");
+
+                //y-axis creation
+                const yAxis = d3.axisLeft(y).tickSizeOuter(0).tickPadding(10);
+                svg.append("g").attr("color", "white").call(yAxis);
+
+                // Pie chart Creation
+
+                // Convert the data into an array of objects with startAngle and endAngles
+                const pie = d3
+                    .pie()
+                    .value((d) => d.value)
+                    .sort(null);
+
+                // Create an SVG element and set its dimensions for the pie chart
+                const radius = Math.min(width, height) / 2;
+
+                // create the new svg object
+                const svg2 = d3
+                    .select("#pie-chart-container")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height + 100)
+                    .append("g")
+                    .attr(
+                        "transform",
+                        `translate(${width / 2}, ${height - 100 / 2})`
+                    );
+
+                // Define the colors for the pie chart (keep them the same as bar graph)
+                const colors = d3
+                    .scaleOrdinal()
+                    .domain(data.map((d) => d.sensID))
+                    .range(d3.schemeSet2);
+
+                // Define the arc generator for the pie chart
+                const arcGenerator = d3
+                    .arc()
+                    .innerRadius(0)
+                    .outerRadius(radius);
+
+                // Create the slices of the pie chart
+                const arcs = svg2
+                    .selectAll("arc")
+                    .data(pie(data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc");
+
+                // formatting for the arcs
+                arcs.append("path")
+                    .attr("d", arcGenerator)
+                    .attr("fill", (d, i) => colors(d.data.sensID))
+                    .attr("stroke", "white")
+                    .attr("stroke-width", 1)
+                    .append("title")
+                    .text((d) => `${d.data.value} ${d.data.units}`);
+
+                // function to help format text inside pie chart pieces
+                const text = arcs
+                    .append("text")
+                    .attr("transform", function (d) {
+                        const [x, y] = arcGenerator.centroid(d);
+                        // calculate the middle angle of the arc
+                        const angle = (d.startAngle + d.endAngle) / 2;
+                        // check if the label is upside down
+                        const isUpsideDown = angle > Math.PI;
+                        // adjust the rotation angle if necessary
+                        const rotationAngle = isUpsideDown
+                            ? (angle * 180) / Math.PI - 90 + 180
+                            : (angle * 180) / Math.PI - 90;
+                        return `translate(${x}, ${y}) rotate(${rotationAngle})`; // rotate the text by the angle
+                    })
+                    .attr("text-anchor", "middle") // want the text in the middle
+                    .style("fill", "white")
+                    .text((d) => `${d.data.value} ${d.data.units}`); // actual text we want
+
+                const legendS = d3.select("#Llegend");
+
+                legendS
+                    .style("list-style", "none")
+                    .style("align-items", "center")
+                    .selectAll("li")
+                    .data(data)
+                    .enter()
+                    .append("li")
+                    .html(function (d) {
+                        return (
+                            "<svg width='10' height='10'><rect width='10' height='10' fill='" +
+                            colors(d.sensID) +
+                            "'></rect></svg> &nbsp;" +
+                            d.datetime +
+                            ": " +
+                            d.value +
+                            " " +
+                            d.units
+                        );
+                    });
+            }
+
+            addData();
+            // Hide the chart initially
+            d3.select("#chart-container").style("display", "none");
+
+            // Show the chart when the "hiro" marker is detected
+            const marker = document.querySelector("a-marker");
+            marker.addEventListener("markerFound", () => {
+                d3.select("#chart-container").style("display", "block");
+                document.querySelector(".toggle").style.display = "block";
+                document.querySelector(".button").style.display = "block";
+                document.querySelector(".legend").style.display = "block";
+            });
+            // Hide the pie chart initially
+            d3.select("#pie-chart-container").style("display", "none");
+            // when we lose the marker lets hide everything again
+            marker.addEventListener("markerLost", () => {
+                d3.select("#pie-chart-container").style("display", "none");
+                document.querySelector(".toggle").style.display = "none";
+                document.querySelector(".button").style.display = "none";
+                document.querySelector(".legend").style.display = "none";
+            });
+            // Hide the chart when the "hiro" marker is lost
+            marker.addEventListener("markerLost", () => {
+                d3.select("#chart-container").style("display", "none");
+                document.querySelector(".toggle").style.display = "none";
+                document.querySelector(".button").style.display = "none";
+                document.querySelector(".legend").style.display = "none";
+            });
+        </script>
+    </body>
+    <!-- this is the CSS -->
+    <style>
+        html,
+        body {
+            overflow: hidden;
+        }
+
+        #chart-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+        }
+
+        #pie-legend-cont {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+
+        svg {
+            overflow: visible;
+        }
+
+        .help {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #008cba;
+            color: #fff;
+            font-size: 30px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .help:hover {
+            background-color: orange;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        #modalContent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            max-height: 80%;
+            overflow-y: auto;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        #closeModal {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #008cba;
+            color: white;
+            border-color: #008cba;
+            margin-top: 1%;
+            margin-bottom: 100px;
+            font-size: large;
+        }
+
+        #closeModal:hover {
+            background-color: orange;
+        }
+
+        .legend-cont {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .legend-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            max-height: 80%;
+            overflow-y: auto;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        #legendClose {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #008cba;
+            color: white;
+            border-color: #008cba;
+            margin-top: 1%;
+            margin-bottom: 100px;
+            font-size: large;
+        }
+
+        #legendClose:hover {
+            background-color: orange;
+        }
+
+        #Ltitle {
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        .buttons {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5em;
+            gap: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            background: white;
+            color: black;
+            display: none;
+        }
+
+        .toggle {
+            display: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            background: white;
+            color: black;
+        }
+
+        .legend {
+            display: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            background: white;
+            color: black;
+        }
+
+        #TITLE {
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        .title {
+            color: white;
+            position: absolute;
+            justify-content: center;
+        }
+
+        .subtitle {
+            text-align: center;
+        }
+
+        .desc {
+            text-align: center;
+        }
+
+        #Tdesc {
+            text-align: center;
+        }
+    </style>
+</html>

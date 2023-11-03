@@ -1,0 +1,103 @@
+h1 {
+  color: #825091;
+}
+
+center {
+  background-color: rgb(255, 255, 255);
+}
+
+body
+ {
+   margin: 0;
+   padding: 0;
+   
+   /* make it look decent enough */
+   background: #232323;
+   color: #cdcdcd;
+   font-family: "Avenir Next", "Avenir", sans-serif;
+ }
+
+#map { 
+  height: 450px;
+  width: 700px;
+  margin: 3rem auto;
+}
+
+/* CSS for the search bar */
+form.example input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 80%;
+  background: #f1f1f1;
+}
+form.example button {
+  float: left;
+  width: 20%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+}
+form.example::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+body {
+  font-family: "Avenir Next", "Avenir", sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+
+.button {
+  background-color: #825091;;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  margin: 25px;
+  width: 60%;
+  cursor: pointer;
+
+}
+
+.center{
+  margin: 3rem auto;
+  width: 100%;
+}
+
+
+/* Messing with the header */
+.header {
+  padding: 10px;
+  height: 100px;
+  text-align: center;
+  background: white;
+  color: white;
+  font-size: 20px;
+}
+.column {
+  float: left;
+}
+
+.left{
+  width: 65%;
+  text-align: right;
+}
+.middle {
+  width: 15%;
+  text-align: left;
+}
+.right {
+  width: 20%;
+  text-align: center;
+}
